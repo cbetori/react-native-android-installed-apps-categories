@@ -1,34 +1,34 @@
 {
-  "name": "react-native-android-installed-apps-unblocking",
-  "version": "1.0.3",
-  "description": "Multithreaded non blocking API to retrieve installed  apps information  using native built-ins",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "react-native",
-    "android",
-    "installed",
-    "apps",
-    "packeges",
-    "applications"
-  ],
-  "author": {
-    "name": "Ayush Garg",
-    "email": "ayushg.iitd@gmail.com",
-    "url": "https://github.com/HydromanAG/react-native-android-installed-apps-unblocking"
-  },
-  "license": "MIT",
-  "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HydromanAG/react-native-android-installed-apps-unblocking.git"
-  },
-  "bugs": {
-    "url": "https://github.com/HydromanAG/react-native-android-installed-apps-unblocking/issues"
-  }
+	"name": "react-native-android-installed-apps-categories",
+	"version": "1.0.3",
+	"description": "Multithreaded non blocking API to retrieve installed  apps information  using native built-ins",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"react-native",
+		"android",
+		"installed",
+		"apps",
+		"packeges",
+		"applications"
+	],
+	"author": {
+		"name": "Collin Betori",
+		"email": "collinb512@gmail.com",
+		"url": "https://github.com/cbetori/react-native-android-installed-apps-categories.git"
+	},
+	"license": "MIT",
+	"peerDependencies": {
+		"react-native": "^0.41.2",
+		"react-native-windows": "0.41.0-rc.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cbetori/react-native-android-installed-apps-categories.git"
+	},
+	"bugs": {
+		"url": "https://github.com/cbetori/react-native-android-installed-apps-categories/issues"
+	}
 }
