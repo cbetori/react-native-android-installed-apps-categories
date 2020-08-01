@@ -27,7 +27,7 @@ This version also provides a method that returns the App category from the play 
    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
    ```
-     compile project(':react-native-android-installed-apps-unblocking')
+     compile project(':react-native-android-installed-apps-categories')
    ```
 
 ## Methods
