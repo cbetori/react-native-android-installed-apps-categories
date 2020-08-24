@@ -1,6 +1,6 @@
 {
 	"name": "react-native-android-installed-apps-categories",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Multithreaded non blocking API to retrieve installed  apps information  using native built-ins",
 	"main": "index.js",
 	"scripts": {
