@@ -14,12 +14,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.content.Context;
+import android.content.res.Resources;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.File;
+
 
 import javax.annotation.Nullable;
 
@@ -65,6 +71,8 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
             appInfo.putDouble("firstInstallTime", (packageInfo.firstInstallTime));
             appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime));
             appInfo.putString("appName", ((String) packageInfo.applicationInfo.loadLabel(pm)).trim());
+            appInfo.putDouble("systemApp", (ApplicationInfo.FLAG_SYSTEM));
+            appInfo.putDouble("systemApp2", (packageInfo.applicationInfo.flags));
 
             final Drawable icon = pm.getApplicationIcon(packageInfo.applicationInfo);
             appInfo.putString("icon", Utility.convert(icon));
@@ -141,6 +149,110 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
 
   }
 
+    @ReactMethod
+  public void getAppDrawerApps(final Promise promise) {
+    class OneShotTask implements Runnable {
+      private final ReactApplicationContext reactContext;
+
+      OneShotTask(final ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
+      }
+      public void run() {
+        try {
+          final PackageManager pm = this.reactContext.getPackageManager();
+          final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+          intent.addCategory(Intent.CATEGORY_LAUNCHER);
+          List<ResolveInfo> pList = pm.queryIntentActivities(intent, 0);
+          final WritableArray list = Arguments.createArray();
+          for (int i = 0; i < pList.size(); i++) {
+            final ResolveInfo resolveInfo = pList.get(i);
+            final PackageInfo packageInfo = pm.getPackageInfo(resolveInfo.activityInfo.packageName, pm.GET_ACTIVITIES);
+            final WritableMap appInfo = Arguments.createMap();
+              appInfo.putString("packageName", resolveInfo.activityInfo.packageName);
+              appInfo.putString("versionName", packageInfo.versionName);
+              appInfo.putDouble("versionCode", packageInfo.versionCode);
+              appInfo.putDouble("firstInstallTime", (packageInfo.firstInstallTime));
+              appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime));
+  
+
+              appInfo.putString("appName", ((String) resolveInfo.loadLabel(pm)).trim());
+
+              final Drawable icon = resolveInfo.loadIcon(pm);
+              appInfo.putString("icon", Utility.convert(icon));
+
+              final String apkDir = packageInfo.applicationInfo.publicSourceDir;
+              appInfo.putString("apkDir", apkDir);
+
+              final File file = new File(apkDir);
+              final double size = file.length();
+              appInfo.putDouble("size", size);
+
+              list.pushMap(appInfo);
+          }
+          promise.resolve(list);
+        } catch (final Exception ex) {
+          promise.reject(ex);
+        }
+
+      }
+    }
+    Thread t = new Thread(new OneShotTask(this.reactContext));
+    t.start();
+  }
+
+      @ReactMethod
+  public void getAppDrawerAppsCats(final Promise promise) {
+    class OneShotTask implements Runnable {
+      private final ReactApplicationContext reactContext;
+
+      OneShotTask(final ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
+      }
+      public void run() {
+        try {
+          final PackageManager pm = this.reactContext.getPackageManager();
+          final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+          intent.addCategory(Intent.CATEGORY_LAUNCHER);
+          List<ResolveInfo> pList = pm.queryIntentActivities(intent, 0);
+          final WritableArray list = Arguments.createArray();
+          for (int i = 0; i < pList.size(); i++) {
+            final ResolveInfo resolveInfo = pList.get(i);
+            final PackageInfo packageInfo = pm.getPackageInfo(resolveInfo.activityInfo.packageName, pm.GET_ACTIVITIES);
+            final WritableMap appInfo = Arguments.createMap();
+              String packageName = resolveInfo.activityInfo.packageName;
+              String category = handleCategory((String) packageName);
+              appInfo.putString("category", category);
+              appInfo.putString("packageName", resolveInfo.activityInfo.packageName);
+              appInfo.putString("versionName", packageInfo.versionName);
+              appInfo.putDouble("versionCode", packageInfo.versionCode);
+              appInfo.putDouble("firstInstallTime", (packageInfo.firstInstallTime));
+              appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime));
+  
+
+              appInfo.putString("appName", ((String) resolveInfo.loadLabel(pm)).trim());
+
+              final Drawable icon = resolveInfo.loadIcon(pm);
+              appInfo.putString("icon", Utility.convert(icon));
+
+              final String apkDir = packageInfo.applicationInfo.publicSourceDir;
+              appInfo.putString("apkDir", apkDir);
+
+              final File file = new File(apkDir);
+              final double size = file.length();
+              appInfo.putDouble("size", size);
+
+              list.pushMap(appInfo);
+          }
+          promise.resolve(list);
+        } catch (final Exception ex) {
+          promise.reject(ex);
+        }
+
+      }
+    }
+    Thread t = new Thread(new OneShotTask(this.reactContext));
+    t.start();
+  }
 
   @ReactMethod
   public void getNonsystemAppsCats(final Promise promise) {
@@ -243,17 +355,33 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
     }
   }
 
+
+  @ReactMethod
+  public void handleCategoryIndividual(String appName, final Promise promise) {
+        try {
+          final PackageManager pm = this.reactContext.getPackageManager();
+          String GOOGLE_URL = "https://play.google.com/store/apps/details?id=";
+          String query_url = GOOGLE_URL + appName;
+          String category = getCategory(query_url);
+          promise.resolve(category);
+        } catch (final Exception ex) {
+          promise.reject(ex);
+        }
+
+  }
+
+
   @ReactMethod
   public String handleCategory(String appName) {
-    try {
-        final PackageManager pm = this.reactContext.getPackageManager();
-        String GOOGLE_URL = "https://play.google.com/store/apps/details?id=";
-        String query_url = GOOGLE_URL + appName;
-        String category = getCategory(query_url);
-        return category;
-      } catch (Exception e) {
-          return "Unable to find category";
-      }
+      try {
+          final PackageManager pm = this.reactContext.getPackageManager();
+          String GOOGLE_URL = "https://play.google.com/store/apps/details?id=";
+          String query_url = GOOGLE_URL + appName;
+          String category = getCategory(query_url);
+          return category;
+        } catch (Exception e) {
+            return "Unable to find category";
+        }
     }
 
   @ReactMethod
@@ -265,5 +393,6 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
     } catch (Exception e) {
         return "N/A";
     }
-  }                
-}
+  } 
+
+}    

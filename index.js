@@ -18,4 +18,13 @@ module.exports = {
 	getNonsystemAppsCats(): Promise<any> {
 		return RNAndroidInstalledApps.getNonsystemAppsCats()
 	},
+	getAppDrawerApps(): Promise<any> {
+		return RNAndroidInstalledApps.getAppDrawerApps()
+	},
+	getAppDrawerAppsCats(): Promise<any> {
+		return RNAndroidInstalledApps.getAppDrawerAppsCats()
+	},
+	handleCategoryIndividual(string): Promise<any> {
+		return RNAndroidInstalledApps.handleCategoryIndividual(string)
+	},
 }
